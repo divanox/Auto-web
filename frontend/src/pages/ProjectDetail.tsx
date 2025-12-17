@@ -180,6 +180,23 @@ const ProjectDetail = () => {
                     </div>
                 </div>
 
+                {/* Website Components */}
+                <div className="glass rounded-2xl p-6 mb-8">
+                    <div className="flex items-center justify-between mb-4">
+                        <h2 className="text-xl font-bold text-gray-800">Website Components</h2>
+                        <Link
+                            to={`/projects/${id}/components`}
+                            className="flex items-center gap-2 bg-gradient-to-r from-primary-500 to-secondary-500 text-white px-4 py-2 rounded-lg hover:shadow-lg transition-all"
+                        >
+                            <Package className="w-4 h-4" />
+                            Manage Components
+                        </Link>
+                    </div>
+                    <p className="text-gray-600">
+                        Build your website using prebuilt components like Hero sections, Features, Contact forms, and more.
+                    </p>
+                </div>
+
                 {/* Enabled Modules */}
                 {enabledModules.length > 0 && (
                     <div className="glass rounded-2xl p-6 mb-8">
@@ -224,8 +241,8 @@ const ProjectDetail = () => {
                                 <div
                                     key={module._id}
                                     className={`p-6 rounded-xl border-2 transition-all ${isEnabled
-                                            ? 'bg-green-50 border-green-300'
-                                            : 'bg-white/50 border-gray-200 hover:border-primary-300'
+                                        ? 'bg-green-50 border-green-300'
+                                        : 'bg-white/50 border-gray-200 hover:border-primary-300'
                                         }`}
                                 >
                                     <div className="flex items-start justify-between mb-3">

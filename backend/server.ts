@@ -10,6 +10,9 @@ import authRoutes from './routes/auth.js';
 import projectRoutes from './routes/projects.js';
 import moduleRoutes from './routes/modules.js';
 import dynamicApiRoutes from './routes/dynamicApi.js';
+import componentTemplateRoutes from './routes/componentTemplates.js';
+import projectComponentRoutes from './routes/projectComponents.js';
+import siteComponentRoutes from './routes/siteComponents.js';
 
 // Load environment variables
 dotenv.config();
@@ -48,7 +51,10 @@ app.get('/', (req: Request, res: Response) => {
             auth: '/api/auth',
             projects: '/api/projects',
             modules: '/api/modules',
-            dynamicApi: '/api/v1/:projectToken/:moduleName'
+            componentTemplates: '/api/component-templates',
+            projectComponents: '/api/projects/:projectId/components',
+            dynamicApi: '/api/v1/:projectToken/:moduleName',
+            site: '/api/v1/:projectToken/site'
         }
     });
 });
@@ -56,6 +62,9 @@ app.get('/', (req: Request, res: Response) => {
 app.use('/api/auth', authRoutes);
 app.use('/api/projects', projectRoutes);
 app.use('/api/modules', moduleRoutes);
+app.use('/api/component-templates', componentTemplateRoutes);
+app.use('/api', projectComponentRoutes);
+app.use('/api/v1', siteComponentRoutes);
 app.use('/api/v1', dynamicApiRoutes);
 
 // 404 handler
