@@ -15,7 +15,7 @@ const Projects = () => {
     const [projects, setProjects] = useState<Project[]>([]);
     const [loading, setLoading] = useState(true);
     const [showModal, setShowModal] = useState(false);
-    const [newProject, setNewProject] = useState({ name: '', description: '' });
+    const [newProject, setNewProject] = useState({ name: '', description: '', projectType: 'website' as 'api' | 'website' });
     const [copiedToken, setCopiedToken] = useState<string | null>(null);
 
     useEffect(() => {
@@ -38,7 +38,7 @@ const Projects = () => {
         try {
             await projectsAPI.create(newProject);
             setShowModal(false);
-            setNewProject({ name: '', description: '' });
+            setNewProject({ name: '', description: '', projectType: 'website' });
             fetchProjects();
         } catch (error) {
             console.error('Error creating project:', error);
@@ -71,7 +71,7 @@ const Projects = () => {
                 <div className="flex items-center justify-between mb-8">
                     <div>
                         <h1 className="text-4xl font-bold text-gray-800 mb-2">Projects</h1>
-                        <p className="text-gray-600">Manage your API projects</p>
+                        <p className="text-gray-600">Manage your API projects and websites</p>
                     </div>
                     <button
                         onClick={() => setShowModal(true)}
@@ -109,8 +109,13 @@ const Projects = () => {
                                 style={{ animationDelay: `${index * 0.1}s` }}
                             >
                                 <div className="flex items-start justify-between mb-4">
-                                    <div className="w-12 h-12 bg-gradient-to-br from-primary-500 to-secondary-500 rounded-xl flex items-center justify-center">
-                                        <FolderKanban className="w-6 h-6 text-white" />
+                                    <div>
+                                        <div className="w-12 h-12 bg-gradient-to-br from-primary-500 to-secondary-500 rounded-xl flex items-center justify-center mb-2">
+                                            <FolderKanban className="w-6 h-6 text-white" />
+                                        </div>
+                                        <span className="text-xs bg-primary-100 text-primary-700 px-2 py-1 rounded-full">
+                                            {project.projectType === 'website' ? '🌐 Website' : '🔌 API'}
+                                        </span>
                                     </div>
                                     <button
                                         onClick={() => handleDeleteProject(project._id)}
@@ -125,31 +130,33 @@ const Projects = () => {
                                     {project.description || 'No description'}
                                 </p>
 
-                                <div className="space-y-2 mb-4">
-                                    <div className="flex items-center gap-2">
-                                        <span className="text-xs text-gray-500">API Token:</span>
-                                        <code className="text-xs bg-gray-100 px-2 py-1 rounded flex-1 truncate">
-                                            {project.apiToken.substring(0, 20)}...
-                                        </code>
-                                        <button
-                                            onClick={() => copyToClipboard(project.apiToken, project._id)}
-                                            className="text-gray-400 hover:text-primary-500 transition-colors"
-                                        >
-                                            {copiedToken === project._id ? (
-                                                <Check className="w-4 h-4 text-green-500" />
-                                            ) : (
-                                                <Copy className="w-4 h-4" />
-                                            )}
-                                        </button>
+                                {project.projectType === 'api' && (
+                                    <div className="space-y-2 mb-4">
+                                        <div className="flex items-center gap-2">
+                                            <span className="text-xs text-gray-500">API Token:</span>
+                                            <code className="text-xs bg-gray-100 px-2 py-1 rounded flex-1 truncate">
+                                                {project.apiToken.substring(0, 20)}...
+                                            </code>
+                                            <button
+                                                onClick={() => copyToClipboard(project.apiToken, project._id)}
+                                                className="text-gray-400 hover:text-primary-500 transition-colors"
+                                            >
+                                                {copiedToken === project._id ? (
+                                                    <Check className="w-4 h-4 text-green-500" />
+                                                ) : (
+                                                    <Copy className="w-4 h-4" />
+                                                )}
+                                            </button>
+                                        </div>
                                     </div>
-                                </div>
+                                )}
 
                                 <Link
                                     to={`/projects/${project._id}`}
                                     className="flex items-center justify-center gap-2 w-full bg-white/50 hover:bg-white text-gray-700 font-medium py-2 px-4 rounded-lg transition-all"
                                 >
                                     <ExternalLink className="w-4 h-4" />
-                                    View Details
+                                    {project.projectType === 'website' ? 'Build Website' : 'View Details'}
                                 </Link>
                             </div>
                         ))}
@@ -164,6 +171,37 @@ const Projects = () => {
                             <form onSubmit={handleCreateProject} className="space-y-4">
                                 <div>
                                     <label className="block text-sm font-medium text-gray-700 mb-2">
+                                        Project Type *
+                                    </label>
+                                    <div className="grid grid-cols-2 gap-3">
+                                        <button
+                                            type="button"
+                                            onClick={() => setNewProject({ ...newProject, projectType: 'website' })}
+                                            className={`p-4 rounded-xl border-2 transition-all ${newProject.projectType === 'website'
+                                                ? 'border-primary-500 bg-primary-50'
+                                                : 'border-gray-200 hover:border-gray-300'
+                                                }`}
+                                        >
+                                            <div className="text-2xl mb-2">🌐</div>
+                                            <div className="font-semibold">Website</div>
+                                            <div className="text-xs text-gray-600">Visual builder</div>
+                                        </button>
+                                        <button
+                                            type="button"
+                                            onClick={() => setNewProject({ ...newProject, projectType: 'api' })}
+                                            className={`p-4 rounded-xl border-2 transition-all ${newProject.projectType === 'api'
+                                                ? 'border-primary-500 bg-primary-50'
+                                                : 'border-gray-200 hover:border-gray-300'
+                                                }`}
+                                        >
+                                            <div className="text-2xl mb-2">🔌</div>
+                                            <div className="font-semibold">API</div>
+                                            <div className="text-xs text-gray-600">Backend only</div>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-2">
                                         Project Name *
                                     </label>
                                     <input
@@ -172,7 +210,7 @@ const Projects = () => {
                                         onChange={(e) => setNewProject({ ...newProject, name: e.target.value })}
                                         required
                                         className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:border-primary-500 focus:ring-2 focus:ring-primary-200 outline-none"
-                                        placeholder="My Awesome API"
+                                        placeholder={newProject.projectType === 'website' ? 'My Website' : 'My API'}
                                     />
                                 </div>
                                 <div>

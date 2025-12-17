@@ -13,6 +13,7 @@ import dynamicApiRoutes from './routes/dynamicApi.js';
 import componentTemplateRoutes from './routes/componentTemplates.js';
 import projectComponentRoutes from './routes/projectComponents.js';
 import siteComponentRoutes from './routes/siteComponents.js';
+import pagesRoutes from './routes/pages.js';
 
 // Load environment variables
 dotenv.config();
@@ -25,10 +26,7 @@ connectDB();
 
 // Middleware
 app.use(helmet()); // Security headers
-app.use(cors({
-    origin: process.env.FRONTEND_URL || 'http://localhost:5173',
-    credentials: true
-}));
+app.use(cors());
 app.use(express.json()); // Parse JSON bodies
 app.use(express.urlencoded({ extended: true })); // Parse URL-encoded bodies
 
@@ -53,6 +51,7 @@ app.get('/', (req: Request, res: Response) => {
             modules: '/api/modules',
             componentTemplates: '/api/component-templates',
             projectComponents: '/api/projects/:projectId/components',
+            pages: '/api/projects/:projectId/pages',
             dynamicApi: '/api/v1/:projectToken/:moduleName',
             site: '/api/v1/:projectToken/site'
         }
@@ -63,6 +62,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/projects', projectRoutes);
 app.use('/api/modules', moduleRoutes);
 app.use('/api/component-templates', componentTemplateRoutes);
+app.use('/api', pagesRoutes);
 app.use('/api', projectComponentRoutes);
 app.use('/api/v1', siteComponentRoutes);
 app.use('/api/v1', dynamicApiRoutes);

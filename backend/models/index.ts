@@ -5,6 +5,7 @@ import ProjectModule from './ProjectModule.js';
 import DynamicData from './DynamicData.js';
 import ComponentTemplate from './ComponentTemplate.js';
 import ProjectComponent from './ProjectComponent.js';
+import Page from './Page.js';
 
 export {
     User,
@@ -13,7 +14,8 @@ export {
     ProjectModule,
     DynamicData,
     ComponentTemplate,
-    ProjectComponent
+    ProjectComponent,
+    Page
 };
 
 export type { IUser } from './User.js';
