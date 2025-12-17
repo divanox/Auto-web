@@ -8,6 +8,7 @@ import Projects from './pages/Projects';
 import ProjectDetail from './pages/ProjectDetail';
 import ComponentLibrary from './pages/ComponentLibrary';
 import ComponentEditor from './pages/ComponentEditor';
+import SitePreview from './pages/SitePreview';
 import './index.css';
 
 function App() {
@@ -57,6 +58,14 @@ function App() {
                         element={
                             <ProtectedRoute>
                                 <ComponentEditor />
+                            </ProtectedRoute>
+                        }
+                    />
+                    <Route
+                        path="/projects/:id/preview"
+                        element={
+                            <ProtectedRoute>
+                                <SitePreview />
                             </ProtectedRoute>
                         }
                     />

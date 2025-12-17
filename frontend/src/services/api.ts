@@ -52,6 +52,7 @@ export interface Project {
     userId: string;
     name: string;
     description: string;
+    projectType: 'api' | 'website';
     apiToken: string;
     baseUrl: string;
     createdAt: string;
@@ -136,7 +137,7 @@ export const authAPI = {
 // Projects API
 export const projectsAPI = {
     getAll: () => api.get('/api/projects'),
-    create: (data: { name: string; description?: string }) =>
+    create: (data: { name: string; description?: string; projectType?: 'api' | 'website' }) =>
         api.post('/api/projects', data),
     getOne: (id: string) => api.get(`/api/projects/${id}`),
     update: (id: string, data: { name?: string; description?: string }) =>

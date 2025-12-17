@@ -2,6 +2,7 @@ import mongoose, { Document, Schema } from 'mongoose';
 
 export interface IProjectComponent extends Document {
     projectId: mongoose.Types.ObjectId;
+    pageId: mongoose.Types.ObjectId;
     templateId: mongoose.Types.ObjectId;
     order: number;
     isActive: boolean;
@@ -26,6 +27,12 @@ const projectComponentSchema = new Schema<IProjectComponent>({
         type: Schema.Types.ObjectId,
         ref: 'Project',
         required: true,
+        index: true
+    },
+    pageId: {
+        type: Schema.Types.ObjectId,
+        ref: 'Page',
+        required: false, // Optional for backward compatibility
         index: true
     },
     templateId: {

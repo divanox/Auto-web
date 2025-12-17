@@ -5,6 +5,7 @@ export interface IProject extends Document {
     userId: mongoose.Types.ObjectId;
     name: string;
     description: string;
+    projectType: 'api' | 'website';
     apiToken: string;
     baseUrl: string;
     createdAt: Date;
@@ -27,6 +28,12 @@ const projectSchema = new Schema<IProject>({
         type: String,
         trim: true,
         default: ''
+    },
+    projectType: {
+        type: String,
+        enum: ['api', 'website'],
+        default: 'website',
+        required: true
     },
     apiToken: {
         type: String,
