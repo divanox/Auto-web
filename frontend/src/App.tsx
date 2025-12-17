@@ -6,6 +6,8 @@ import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
 import Projects from './pages/Projects';
 import ProjectDetail from './pages/ProjectDetail';
+import ComponentLibrary from './pages/ComponentLibrary';
+import ComponentEditor from './pages/ComponentEditor';
 import './index.css';
 
 function App() {
@@ -39,6 +41,22 @@ function App() {
                         element={
                             <ProtectedRoute>
                                 <ProjectDetail />
+                            </ProtectedRoute>
+                        }
+                    />
+                    <Route
+                        path="/projects/:id/components"
+                        element={
+                            <ProtectedRoute>
+                                <ComponentLibrary />
+                            </ProtectedRoute>
+                        }
+                    />
+                    <Route
+                        path="/projects/:id/components/:componentId/edit"
+                        element={
+                            <ProtectedRoute>
+                                <ComponentEditor />
                             </ProtectedRoute>
                         }
                     />

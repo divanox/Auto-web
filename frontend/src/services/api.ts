@@ -78,6 +78,52 @@ export interface ProjectModule {
     updatedAt: string;
 }
 
+export interface ComponentTemplate {
+    _id: string;
+    name: string;
+    slug: string;
+    category: string;
+    description: string;
+    icon: string;
+    fieldSchema: {
+        fields: Array<{
+            name: string;
+            type: string;
+            label: string;
+            required: boolean;
+            default?: any;
+            placeholder?: string;
+            options?: string[];
+        }>;
+    };
+    previewImage: string;
+    defaultConfig: Record<string, any>;
+    createdAt: string;
+    updatedAt: string;
+}
+
+export interface ProjectComponent {
+    _id: string;
+    projectId: string;
+    templateId: ComponentTemplate;
+    order: number;
+    isActive: boolean;
+    configuration: {
+        layout?: string;
+        colors?: {
+            primary?: string;
+            secondary?: string;
+            background?: string;
+            text?: string;
+        };
+        spacing?: Record<string, any>;
+        customCSS?: string;
+    };
+    content: Record<string, any>;
+    createdAt: string;
+    updatedAt: string;
+}
+
 // Auth API
 export const authAPI = {
     register: (data: { name: string; email: string; password: string }) =>
@@ -109,6 +155,26 @@ export const modulesAPI = {
         api.post(`/api/projects/${projectId}/modules`, data),
     disableModule: (projectId: string, moduleId: string) =>
         api.delete(`/api/projects/${projectId}/modules/${moduleId}`),
+};
+
+// Component Templates API
+export const componentTemplatesAPI = {
+    getAll: () => api.get('/api/component-templates'),
+    getOne: (id: string) => api.get(`/api/component-templates/${id}`),
+};
+
+// Project Components API
+export const projectComponentsAPI = {
+    getAll: (projectId: string) =>
+        api.get(`/api/projects/${projectId}/components`),
+    create: (projectId: string, data: { templateId: string; content?: Record<string, any>; configuration?: Record<string, any> }) =>
+        api.post(`/api/projects/${projectId}/components`, data),
+    update: (projectId: string, componentId: string, data: { content?: Record<string, any>; configuration?: Record<string, any>; isActive?: boolean }) =>
+        api.put(`/api/projects/${projectId}/components/${componentId}`, data),
+    delete: (projectId: string, componentId: string) =>
+        api.delete(`/api/projects/${projectId}/components/${componentId}`),
+    reorder: (projectId: string, componentIds: string[]) =>
+        api.put(`/api/projects/${projectId}/components/reorder`, { componentIds }),
 };
 
 // Dynamic Data API (for admin panel)

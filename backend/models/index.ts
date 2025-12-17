@@ -3,13 +3,17 @@ import Project from './Project.js';
 import Module from './Module.js';
 import ProjectModule from './ProjectModule.js';
 import DynamicData from './DynamicData.js';
+import ComponentTemplate from './ComponentTemplate.js';
+import ProjectComponent from './ProjectComponent.js';
 
 export {
     User,
     Project,
     Module,
     ProjectModule,
-    DynamicData
+    DynamicData,
+    ComponentTemplate,
+    ProjectComponent
 };
 
 export type { IUser } from './User.js';
@@ -17,3 +21,5 @@ export type { IProject } from './Project.js';
 export type { IModule } from './Module.js';
 export type { IProjectModule } from './ProjectModule.js';
 export type { IDynamicData } from './DynamicData.js';
+export type { IComponentTemplate } from './ComponentTemplate.js';
+export type { IProjectComponent } from './ProjectComponent.js';
