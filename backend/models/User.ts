@@ -1,7 +1,16 @@
-import mongoose from 'mongoose';
+import mongoose, { Document, Schema } from 'mongoose';
 import bcrypt from 'bcrypt';
 
-const userSchema = new mongoose.Schema({
+export interface IUser extends Document {
+    email: string;
+    password: string;
+    name: string;
+    comparePassword(candidatePassword: string): Promise<boolean>;
+    createdAt: Date;
+    updatedAt: Date;
+}
+
+const userSchema = new Schema<IUser>({
     email: {
         type: String,
         required: [true, 'Email is required'],
@@ -14,7 +23,7 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: [true, 'Password is required'],
         minlength: [6, 'Password must be at least 6 characters'],
-        select: false // Don't include password in queries by default
+        select: false
     },
     name: {
         type: String,
@@ -35,13 +44,13 @@ userSchema.pre('save', async function (next) {
         const salt = await bcrypt.genSalt(10);
         this.password = await bcrypt.hash(this.password, salt);
         next();
-    } catch (error) {
+    } catch (error: any) {
         next(error);
     }
 });
 
 // Method to compare passwords
-userSchema.methods.comparePassword = async function (candidatePassword) {
+userSchema.methods.comparePassword = async function (candidatePassword: string): Promise<boolean> {
     return await bcrypt.compare(candidatePassword, this.password);
 };
 
@@ -52,6 +61,6 @@ userSchema.methods.toJSON = function () {
     return obj;
 };
 
-const User = mongoose.model('User', userSchema);
+const User = mongoose.model<IUser>('User', userSchema);
 
 export default User;

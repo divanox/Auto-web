@@ -1,32 +1,34 @@
-import express from 'express';
+import express, { Router, Response } from 'express';
 import jwt from 'jsonwebtoken';
 import { User } from '../models/index.js';
-import { authenticateUser } from '../middleware/auth.js';
+import { authenticateUser, AuthRequest } from '../middleware/auth.js';
 
-const router = express.Router();
+const router: Router = express.Router();
 
 // @route   POST /api/auth/register
 // @desc    Register a new user
 // @access  Public
-router.post('/register', async (req, res) => {
+router.post('/register', async (req: AuthRequest, res: Response): Promise<void> => {
     try {
         const { email, password, name } = req.body;
 
         // Validate input
         if (!email || !password || !name) {
-            return res.status(400).json({
+            res.status(400).json({
                 success: false,
                 message: 'Please provide email, password, and name.'
             });
+            return;
         }
 
         // Check if user already exists
         const existingUser = await User.findOne({ email });
         if (existingUser) {
-            return res.status(400).json({
+            res.status(400).json({
                 success: false,
                 message: 'User with this email already exists.'
             });
+            return;
         }
 
         // Create new user
@@ -35,7 +37,7 @@ router.post('/register', async (req, res) => {
         // Generate JWT token
         const token = jwt.sign(
             { userId: user._id },
-            process.env.JWT_SECRET,
+            process.env.JWT_SECRET as string,
             { expiresIn: process.env.JWT_EXPIRE || '7d' }
         );
 
@@ -52,7 +54,7 @@ router.post('/register', async (req, res) => {
         res.status(500).json({
             success: false,
             message: 'Error registering user.',
-            error: error.message
+            error: (error as Error).message
         });
     }
 });
@@ -60,45 +62,48 @@ router.post('/register', async (req, res) => {
 // @route   POST /api/auth/login
 // @desc    Login user
 // @access  Public
-router.post('/login', async (req, res) => {
+router.post('/login', async (req: AuthRequest, res: Response): Promise<void> => {
     try {
         const { email, password } = req.body;
 
         // Validate input
         if (!email || !password) {
-            return res.status(400).json({
+            res.status(400).json({
                 success: false,
                 message: 'Please provide email and password.'
             });
+            return;
         }
 
         // Find user and include password field
         const user = await User.findOne({ email }).select('+password');
         if (!user) {
-            return res.status(401).json({
+            res.status(401).json({
                 success: false,
                 message: 'Invalid credentials.'
             });
+            return;
         }
 
         // Check password
         const isPasswordValid = await user.comparePassword(password);
         if (!isPasswordValid) {
-            return res.status(401).json({
+            res.status(401).json({
                 success: false,
                 message: 'Invalid credentials.'
             });
+            return;
         }
 
         // Generate JWT token
         const token = jwt.sign(
             { userId: user._id },
-            process.env.JWT_SECRET,
+            process.env.JWT_SECRET as string,
             { expiresIn: process.env.JWT_EXPIRE || '7d' }
         );
 
         // Remove password from response
-        user.password = undefined;
+        user.password = undefined as any;
 
         res.status(200).json({
             success: true,
@@ -113,7 +118,7 @@ router.post('/login', async (req, res) => {
         res.status(500).json({
             success: false,
             message: 'Error logging in.',
-            error: error.message
+            error: (error as Error).message
         });
     }
 });
@@ -121,7 +126,7 @@ router.post('/login', async (req, res) => {
 // @route   GET /api/auth/me
 // @desc    Get current user
 // @access  Private
-router.get('/me', authenticateUser, async (req, res) => {
+router.get('/me', authenticateUser, async (req: AuthRequest, res: Response): Promise<void> => {
     try {
         res.status(200).json({
             success: true,
@@ -134,7 +139,7 @@ router.get('/me', authenticateUser, async (req, res) => {
         res.status(500).json({
             success: false,
             message: 'Error fetching user data.',
-            error: error.message
+            error: (error as Error).message
         });
     }
 });

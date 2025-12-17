@@ -1,8 +1,8 @@
-import express from 'express';
+import express, { Router, Response } from 'express';
 import { Module, ProjectModule } from '../models/index.js';
-import { authenticateUser, authorizeProjectOwner } from '../middleware/auth.js';
+import { authenticateUser, authorizeProjectOwner, AuthRequest } from '../middleware/auth.js';
 
-const router = express.Router();
+const router: Router = express.Router();
 
 // All routes require authentication
 router.use(authenticateUser);
@@ -10,7 +10,7 @@ router.use(authenticateUser);
 // @route   GET /api/modules
 // @desc    Get all available modules
 // @access  Private
-router.get('/', async (req, res) => {
+router.get('/', async (req: AuthRequest, res: Response): Promise<void> => {
     try {
         const modules = await Module.find().sort({ name: 1 });
 
@@ -24,7 +24,7 @@ router.get('/', async (req, res) => {
         res.status(500).json({
             success: false,
             message: 'Error fetching modules.',
-            error: error.message
+            error: (error as Error).message
         });
     }
 });
@@ -32,15 +32,16 @@ router.get('/', async (req, res) => {
 // @route   GET /api/modules/:id
 // @desc    Get a single module
 // @access  Private
-router.get('/:id', async (req, res) => {
+router.get('/:id', async (req: AuthRequest, res: Response): Promise<void> => {
     try {
         const module = await Module.findById(req.params.id);
 
         if (!module) {
-            return res.status(404).json({
+            res.status(404).json({
                 success: false,
                 message: 'Module not found.'
             });
+            return;
         }
 
         res.status(200).json({
@@ -52,7 +53,7 @@ router.get('/:id', async (req, res) => {
         res.status(500).json({
             success: false,
             message: 'Error fetching module.',
-            error: error.message
+            error: (error as Error).message
         });
     }
 });
@@ -60,7 +61,7 @@ router.get('/:id', async (req, res) => {
 // @route   GET /api/projects/:projectId/modules
 // @desc    Get all enabled modules for a project
 // @access  Private (owner only)
-router.get('/projects/:projectId/modules', authorizeProjectOwner, async (req, res) => {
+router.get('/projects/:projectId/modules', authorizeProjectOwner, async (req: AuthRequest, res: Response): Promise<void> => {
     try {
         const projectModules = await ProjectModule.find({
             projectId: req.params.projectId
@@ -76,7 +77,7 @@ router.get('/projects/:projectId/modules', authorizeProjectOwner, async (req, re
         res.status(500).json({
             success: false,
             message: 'Error fetching project modules.',
-            error: error.message
+            error: (error as Error).message
         });
     }
 });
@@ -84,24 +85,26 @@ router.get('/projects/:projectId/modules', authorizeProjectOwner, async (req, re
 // @route   POST /api/projects/:projectId/modules
 // @desc    Enable a module for a project
 // @access  Private (owner only)
-router.post('/projects/:projectId/modules', authorizeProjectOwner, async (req, res) => {
+router.post('/projects/:projectId/modules', authorizeProjectOwner, async (req: AuthRequest, res: Response): Promise<void> => {
     try {
         const { moduleId, configuration } = req.body;
 
         if (!moduleId) {
-            return res.status(400).json({
+            res.status(400).json({
                 success: false,
                 message: 'Module ID is required.'
             });
+            return;
         }
 
         // Check if module exists
         const module = await Module.findById(moduleId);
         if (!module) {
-            return res.status(404).json({
+            res.status(404).json({
                 success: false,
                 message: 'Module not found.'
             });
+            return;
         }
 
         // Check if module is already enabled
@@ -111,10 +114,11 @@ router.post('/projects/:projectId/modules', authorizeProjectOwner, async (req, r
         });
 
         if (existing) {
-            return res.status(400).json({
+            res.status(400).json({
                 success: false,
                 message: 'Module is already enabled for this project.'
             });
+            return;
         }
 
         // Enable module
@@ -136,7 +140,7 @@ router.post('/projects/:projectId/modules', authorizeProjectOwner, async (req, r
         res.status(500).json({
             success: false,
             message: 'Error enabling module.',
-            error: error.message
+            error: (error as Error).message
         });
     }
 });
@@ -144,7 +148,7 @@ router.post('/projects/:projectId/modules', authorizeProjectOwner, async (req, r
 // @route   DELETE /api/projects/:projectId/modules/:moduleId
 // @desc    Disable a module for a project
 // @access  Private (owner only)
-router.delete('/projects/:projectId/modules/:moduleId', authorizeProjectOwner, async (req, res) => {
+router.delete('/projects/:projectId/modules/:moduleId', authorizeProjectOwner, async (req: AuthRequest, res: Response): Promise<void> => {
     try {
         const result = await ProjectModule.findOneAndDelete({
             projectId: req.params.projectId,
@@ -152,10 +156,11 @@ router.delete('/projects/:projectId/modules/:moduleId', authorizeProjectOwner, a
         });
 
         if (!result) {
-            return res.status(404).json({
+            res.status(404).json({
                 success: false,
                 message: 'Module not found for this project.'
             });
+            return;
         }
 
         res.status(200).json({
@@ -167,7 +172,7 @@ router.delete('/projects/:projectId/modules/:moduleId', authorizeProjectOwner, a
         res.status(500).json({
             success: false,
             message: 'Error disabling module.',
-            error: error.message
+            error: (error as Error).message
         });
     }
 });

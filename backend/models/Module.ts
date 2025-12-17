@@ -1,6 +1,16 @@
-import mongoose from 'mongoose';
+import mongoose, { Document, Schema } from 'mongoose';
 
-const moduleSchema = new mongoose.Schema({
+export interface IModule extends Document {
+    name: string;
+    slug: string;
+    description: string;
+    icon: string;
+    schema: Record<string, any>;
+    createdAt: Date;
+    updatedAt: Date;
+}
+
+const moduleSchema = new Schema<IModule>({
     name: {
         type: String,
         required: true,
@@ -21,13 +31,13 @@ const moduleSchema = new mongoose.Schema({
         default: 'Box'
     },
     schema: {
-        type: mongoose.Schema.Types.Mixed,
+        type: Schema.Types.Mixed,
         required: true
     }
 }, {
     timestamps: true
 });
 
-const Module = mongoose.model('Module', moduleSchema);
+const Module = mongoose.model<IModule>('Module', moduleSchema);
 
 export default Module;

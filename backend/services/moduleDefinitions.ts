@@ -1,6 +1,26 @@
 // Predefined module schemas for the API Builder
 
-export const moduleDefinitions = [
+interface FieldConfig {
+    type: string;
+    required: boolean;
+    label: string;
+    default?: any;
+    options?: string[];
+}
+
+interface ModuleSchema {
+    [key: string]: FieldConfig;
+}
+
+export interface ModuleDefinition {
+    name: string;
+    slug: string;
+    description: string;
+    icon: string;
+    schema: ModuleSchema;
+}
+
+export const moduleDefinitions: ModuleDefinition[] = [
     {
         name: 'Product Catalog',
         slug: 'products',
@@ -68,9 +88,14 @@ export const moduleDefinitions = [
     }
 ];
 
+interface ValidationResult {
+    isValid: boolean;
+    errors: string[];
+}
+
 // Validation function to check if data matches schema
-export const validateDataAgainstSchema = (data, schema) => {
-    const errors = [];
+export const validateDataAgainstSchema = (data: Record<string, any>, schema: ModuleSchema): ValidationResult => {
+    const errors: string[] = [];
 
     for (const [fieldName, fieldConfig] of Object.entries(schema)) {
         const value = data[fieldName];

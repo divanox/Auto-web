@@ -1,9 +1,19 @@
-import mongoose from 'mongoose';
+import mongoose, { Document, Schema } from 'mongoose';
 import { nanoid } from 'nanoid';
 
-const projectSchema = new mongoose.Schema({
+export interface IProject extends Document {
+    userId: mongoose.Types.ObjectId;
+    name: string;
+    description: string;
+    apiToken: string;
+    baseUrl: string;
+    createdAt: Date;
+    updatedAt: Date;
+}
+
+const projectSchema = new Schema<IProject>({
     userId: {
-        type: mongoose.Schema.Types.ObjectId,
+        type: Schema.Types.ObjectId,
         ref: 'User',
         required: true,
         index: true
@@ -26,7 +36,7 @@ const projectSchema = new mongoose.Schema({
     },
     baseUrl: {
         type: String,
-        default: function () {
+        default: function (this: IProject) {
             return `${process.env.API_BASE_URL}/api/v1/${this.apiToken}`;
         }
     }
@@ -42,6 +52,6 @@ projectSchema.pre('save', function (next) {
     next();
 });
 
-const Project = mongoose.model('Project', projectSchema);
+const Project = mongoose.model<IProject>('Project', projectSchema);
 
 export default Project;

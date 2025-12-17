@@ -1,12 +1,12 @@
 import dotenv from 'dotenv';
-import connectDB from './config/database.js';
-import { Module } from './models/index.js';
-import { moduleDefinitions } from './services/moduleDefinitions.js';
+import connectDB from '../config/database.js';
+import { Module } from '../models/index.js';
+import { moduleDefinitions } from '../services/moduleDefinitions.js';
 
 // Load environment variables
 dotenv.config();
 
-const seedModules = async () => {
+const seedModules = async (): Promise<void> => {
     try {
         // Connect to database
         await connectDB();

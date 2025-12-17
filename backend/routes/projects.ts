@@ -1,9 +1,9 @@
-import express from 'express';
+import express, { Router, Response } from 'express';
 import { nanoid } from 'nanoid';
 import { Project } from '../models/index.js';
-import { authenticateUser, authorizeProjectOwner } from '../middleware/auth.js';
+import { authenticateUser, authorizeProjectOwner, AuthRequest } from '../middleware/auth.js';
 
-const router = express.Router();
+const router: Router = express.Router();
 
 // All routes require authentication
 router.use(authenticateUser);
@@ -11,9 +11,9 @@ router.use(authenticateUser);
 // @route   GET /api/projects
 // @desc    Get all projects for the authenticated user
 // @access  Private
-router.get('/', async (req, res) => {
+router.get('/', async (req: AuthRequest, res: Response): Promise<void> => {
     try {
-        const projects = await Project.find({ userId: req.user._id })
+        const projects = await Project.find({ userId: req.user!._id })
             .sort({ createdAt: -1 });
 
         res.status(200).json({
@@ -26,7 +26,7 @@ router.get('/', async (req, res) => {
         res.status(500).json({
             success: false,
             message: 'Error fetching projects.',
-            error: error.message
+            error: (error as Error).message
         });
     }
 });
@@ -34,19 +34,20 @@ router.get('/', async (req, res) => {
 // @route   POST /api/projects
 // @desc    Create a new project
 // @access  Private
-router.post('/', async (req, res) => {
+router.post('/', async (req: AuthRequest, res: Response): Promise<void> => {
     try {
         const { name, description } = req.body;
 
         if (!name) {
-            return res.status(400).json({
+            res.status(400).json({
                 success: false,
                 message: 'Project name is required.'
             });
+            return;
         }
 
         const project = await Project.create({
-            userId: req.user._id,
+            userId: req.user!._id,
             name,
             description: description || ''
         });
@@ -61,7 +62,7 @@ router.post('/', async (req, res) => {
         res.status(500).json({
             success: false,
             message: 'Error creating project.',
-            error: error.message
+            error: (error as Error).message
         });
     }
 });
@@ -69,7 +70,7 @@ router.post('/', async (req, res) => {
 // @route   GET /api/projects/:id
 // @desc    Get a single project
 // @access  Private (owner only)
-router.get('/:id', authorizeProjectOwner, async (req, res) => {
+router.get('/:id', authorizeProjectOwner, async (req: AuthRequest, res: Response): Promise<void> => {
     try {
         res.status(200).json({
             success: true,
@@ -80,7 +81,7 @@ router.get('/:id', authorizeProjectOwner, async (req, res) => {
         res.status(500).json({
             success: false,
             message: 'Error fetching project.',
-            error: error.message
+            error: (error as Error).message
         });
     }
 });
@@ -88,14 +89,14 @@ router.get('/:id', authorizeProjectOwner, async (req, res) => {
 // @route   PUT /api/projects/:id
 // @desc    Update a project
 // @access  Private (owner only)
-router.put('/:id', authorizeProjectOwner, async (req, res) => {
+router.put('/:id', authorizeProjectOwner, async (req: AuthRequest, res: Response): Promise<void> => {
     try {
         const { name, description } = req.body;
 
-        if (name) req.project.name = name;
-        if (description !== undefined) req.project.description = description;
+        if (name) req.project!.name = name;
+        if (description !== undefined) req.project!.description = description;
 
-        await req.project.save();
+        await req.project!.save();
 
         res.status(200).json({
             success: true,
@@ -107,7 +108,7 @@ router.put('/:id', authorizeProjectOwner, async (req, res) => {
         res.status(500).json({
             success: false,
             message: 'Error updating project.',
-            error: error.message
+            error: (error as Error).message
         });
     }
 });
@@ -115,9 +116,9 @@ router.put('/:id', authorizeProjectOwner, async (req, res) => {
 // @route   DELETE /api/projects/:id
 // @desc    Delete a project
 // @access  Private (owner only)
-router.delete('/:id', authorizeProjectOwner, async (req, res) => {
+router.delete('/:id', authorizeProjectOwner, async (req: AuthRequest, res: Response): Promise<void> => {
     try {
-        await Project.findByIdAndDelete(req.project._id);
+        await Project.findByIdAndDelete(req.project!._id);
 
         res.status(200).json({
             success: true,
@@ -128,7 +129,7 @@ router.delete('/:id', authorizeProjectOwner, async (req, res) => {
         res.status(500).json({
             success: false,
             message: 'Error deleting project.',
-            error: error.message
+            error: (error as Error).message
         });
     }
 });
@@ -136,10 +137,10 @@ router.delete('/:id', authorizeProjectOwner, async (req, res) => {
 // @route   POST /api/projects/:id/regenerate-token
 // @desc    Regenerate API token for a project
 // @access  Private (owner only)
-router.post('/:id/regenerate-token', authorizeProjectOwner, async (req, res) => {
+router.post('/:id/regenerate-token', authorizeProjectOwner, async (req: AuthRequest, res: Response): Promise<void> => {
     try {
-        req.project.apiToken = nanoid(32);
-        await req.project.save();
+        req.project!.apiToken = nanoid(32);
+        await req.project!.save();
 
         res.status(200).json({
             success: true,
@@ -151,7 +152,7 @@ router.post('/:id/regenerate-token', authorizeProjectOwner, async (req, res) => 
         res.status(500).json({
             success: false,
             message: 'Error regenerating API token.',
-            error: error.message
+            error: (error as Error).message
         });
     }
 });

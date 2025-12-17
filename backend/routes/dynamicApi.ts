@@ -1,9 +1,9 @@
-import express from 'express';
+import express, { Router, Response } from 'express';
 import { DynamicData, Module, ProjectModule } from '../models/index.js';
-import { authenticateApiToken } from '../middleware/auth.js';
+import { authenticateApiToken, AuthRequest } from '../middleware/auth.js';
 import { validateDataAgainstSchema } from '../services/moduleDefinitions.js';
 
-const router = express.Router();
+const router: Router = express.Router();
 
 // All dynamic API routes require API token authentication
 router.use('/:projectToken/:moduleName*', authenticateApiToken);
@@ -11,35 +11,37 @@ router.use('/:projectToken/:moduleName*', authenticateApiToken);
 // @route   GET /api/v1/:projectToken/:moduleName
 // @desc    Get all records for a module
 // @access  Public (with valid API token)
-router.get('/:projectToken/:moduleName', async (req, res) => {
+router.get('/:projectToken/:moduleName', async (req: AuthRequest, res: Response): Promise<void> => {
     try {
         const { moduleName } = req.params;
 
         // Find the module by slug
         const module = await Module.findOne({ slug: moduleName });
         if (!module) {
-            return res.status(404).json({
+            res.status(404).json({
                 success: false,
                 message: `Module '${moduleName}' not found.`
             });
+            return;
         }
 
         // Check if module is enabled for this project
         const projectModule = await ProjectModule.findOne({
-            projectId: req.project._id,
+            projectId: req.project!._id,
             moduleId: module._id
         });
 
         if (!projectModule) {
-            return res.status(403).json({
+            res.status(403).json({
                 success: false,
                 message: `Module '${moduleName}' is not enabled for this project.`
             });
+            return;
         }
 
         // Get all data for this module
         const records = await DynamicData.find({
-            projectId: req.project._id,
+            projectId: req.project!._id,
             moduleId: module._id
         }).sort({ createdAt: -1 });
 
@@ -53,7 +55,7 @@ router.get('/:projectToken/:moduleName', async (req, res) => {
         res.status(500).json({
             success: false,
             message: 'Error fetching records.',
-            error: error.message
+            error: (error as Error).message
         });
     }
 });
@@ -61,45 +63,48 @@ router.get('/:projectToken/:moduleName', async (req, res) => {
 // @route   POST /api/v1/:projectToken/:moduleName
 // @desc    Create a new record
 // @access  Public (with valid API token)
-router.post('/:projectToken/:moduleName', async (req, res) => {
+router.post('/:projectToken/:moduleName', async (req: AuthRequest, res: Response): Promise<void> => {
     try {
         const { moduleName } = req.params;
 
         // Find the module
         const module = await Module.findOne({ slug: moduleName });
         if (!module) {
-            return res.status(404).json({
+            res.status(404).json({
                 success: false,
                 message: `Module '${moduleName}' not found.`
             });
+            return;
         }
 
         // Check if module is enabled
         const projectModule = await ProjectModule.findOne({
-            projectId: req.project._id,
+            projectId: req.project!._id,
             moduleId: module._id
         });
 
         if (!projectModule) {
-            return res.status(403).json({
+            res.status(403).json({
                 success: false,
                 message: `Module '${moduleName}' is not enabled for this project.`
             });
+            return;
         }
 
         // Validate data against schema
         const validation = validateDataAgainstSchema(req.body, module.schema);
         if (!validation.isValid) {
-            return res.status(400).json({
+            res.status(400).json({
                 success: false,
                 message: 'Validation failed.',
                 errors: validation.errors
             });
+            return;
         }
 
         // Create record
         const record = await DynamicData.create({
-            projectId: req.project._id,
+            projectId: req.project!._id,
             moduleId: module._id,
             data: req.body
         });
@@ -114,7 +119,7 @@ router.post('/:projectToken/:moduleName', async (req, res) => {
         res.status(500).json({
             success: false,
             message: 'Error creating record.',
-            error: error.message
+            error: (error as Error).message
         });
     }
 });
@@ -122,31 +127,33 @@ router.post('/:projectToken/:moduleName', async (req, res) => {
 // @route   GET /api/v1/:projectToken/:moduleName/:id
 // @desc    Get a single record
 // @access  Public (with valid API token)
-router.get('/:projectToken/:moduleName/:id', async (req, res) => {
+router.get('/:projectToken/:moduleName/:id', async (req: AuthRequest, res: Response): Promise<void> => {
     try {
         const { moduleName, id } = req.params;
 
         // Find the module
         const module = await Module.findOne({ slug: moduleName });
         if (!module) {
-            return res.status(404).json({
+            res.status(404).json({
                 success: false,
                 message: `Module '${moduleName}' not found.`
             });
+            return;
         }
 
         // Get the record
         const record = await DynamicData.findOne({
             _id: id,
-            projectId: req.project._id,
+            projectId: req.project!._id,
             moduleId: module._id
         });
 
         if (!record) {
-            return res.status(404).json({
+            res.status(404).json({
                 success: false,
                 message: 'Record not found.'
             });
+            return;
         }
 
         res.status(200).json({
@@ -158,7 +165,7 @@ router.get('/:projectToken/:moduleName/:id', async (req, res) => {
         res.status(500).json({
             success: false,
             message: 'Error fetching record.',
-            error: error.message
+            error: (error as Error).message
         });
     }
 });
@@ -166,34 +173,36 @@ router.get('/:projectToken/:moduleName/:id', async (req, res) => {
 // @route   PUT /api/v1/:projectToken/:moduleName/:id
 // @desc    Update a record
 // @access  Public (with valid API token)
-router.put('/:projectToken/:moduleName/:id', async (req, res) => {
+router.put('/:projectToken/:moduleName/:id', async (req: AuthRequest, res: Response): Promise<void> => {
     try {
         const { moduleName, id } = req.params;
 
         // Find the module
         const module = await Module.findOne({ slug: moduleName });
         if (!module) {
-            return res.status(404).json({
+            res.status(404).json({
                 success: false,
                 message: `Module '${moduleName}' not found.`
             });
+            return;
         }
 
         // Validate data against schema
         const validation = validateDataAgainstSchema(req.body, module.schema);
         if (!validation.isValid) {
-            return res.status(400).json({
+            res.status(400).json({
                 success: false,
                 message: 'Validation failed.',
                 errors: validation.errors
             });
+            return;
         }
 
         // Update record
         const record = await DynamicData.findOneAndUpdate(
             {
                 _id: id,
-                projectId: req.project._id,
+                projectId: req.project!._id,
                 moduleId: module._id
             },
             { data: req.body },
@@ -201,10 +210,11 @@ router.put('/:projectToken/:moduleName/:id', async (req, res) => {
         );
 
         if (!record) {
-            return res.status(404).json({
+            res.status(404).json({
                 success: false,
                 message: 'Record not found.'
             });
+            return;
         }
 
         res.status(200).json({
@@ -217,7 +227,7 @@ router.put('/:projectToken/:moduleName/:id', async (req, res) => {
         res.status(500).json({
             success: false,
             message: 'Error updating record.',
-            error: error.message
+            error: (error as Error).message
         });
     }
 });
@@ -225,31 +235,33 @@ router.put('/:projectToken/:moduleName/:id', async (req, res) => {
 // @route   DELETE /api/v1/:projectToken/:moduleName/:id
 // @desc    Delete a record
 // @access  Public (with valid API token)
-router.delete('/:projectToken/:moduleName/:id', async (req, res) => {
+router.delete('/:projectToken/:moduleName/:id', async (req: AuthRequest, res: Response): Promise<void> => {
     try {
         const { moduleName, id } = req.params;
 
         // Find the module
         const module = await Module.findOne({ slug: moduleName });
         if (!module) {
-            return res.status(404).json({
+            res.status(404).json({
                 success: false,
                 message: `Module '${moduleName}' not found.`
             });
+            return;
         }
 
         // Delete record
         const record = await DynamicData.findOneAndDelete({
             _id: id,
-            projectId: req.project._id,
+            projectId: req.project!._id,
             moduleId: module._id
         });
 
         if (!record) {
-            return res.status(404).json({
+            res.status(404).json({
                 success: false,
                 message: 'Record not found.'
             });
+            return;
         }
 
         res.status(200).json({
@@ -261,7 +273,7 @@ router.delete('/:projectToken/:moduleName/:id', async (req, res) => {
         res.status(500).json({
             success: false,
             message: 'Error deleting record.',
-            error: error.message
+            error: (error as Error).message
         });
     }
 });

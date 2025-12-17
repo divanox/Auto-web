@@ -1,42 +1,57 @@
+import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
-import { User, Project } from '../models/index.js';
+import { User, Project, IUser, IProject } from '../models/index.js';
+
+// Extend Express Request type to include user and project
+export interface AuthRequest extends Request {
+    user?: IUser;
+    project?: IProject;
+}
 
 // Middleware to verify JWT token for authenticated users
-export const authenticateUser = async (req, res, next) => {
+export const authenticateUser = async (
+    req: AuthRequest,
+    res: Response,
+    next: NextFunction
+): Promise<void> => {
     try {
         const token = req.headers.authorization?.split(' ')[1];
 
         if (!token) {
-            return res.status(401).json({
+            res.status(401).json({
                 success: false,
                 message: 'Access denied. No token provided.'
             });
+            return;
         }
 
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        const decoded = jwt.verify(token, process.env.JWT_SECRET as string) as { userId: string };
         const user = await User.findById(decoded.userId);
 
         if (!user) {
-            return res.status(401).json({
+            res.status(401).json({
                 success: false,
                 message: 'Invalid token. User not found.'
             });
+            return;
         }
 
         req.user = user;
         next();
     } catch (error) {
-        if (error.name === 'JsonWebTokenError') {
-            return res.status(401).json({
+        if (error instanceof jwt.JsonWebTokenError) {
+            res.status(401).json({
                 success: false,
                 message: 'Invalid token.'
             });
+            return;
         }
-        if (error.name === 'TokenExpiredError') {
-            return res.status(401).json({
+        if (error instanceof jwt.TokenExpiredError) {
+            res.status(401).json({
                 success: false,
                 message: 'Token expired.'
             });
+            return;
         }
         res.status(500).json({
             success: false,
@@ -46,24 +61,30 @@ export const authenticateUser = async (req, res, next) => {
 };
 
 // Middleware to verify API token for generated APIs
-export const authenticateApiToken = async (req, res, next) => {
+export const authenticateApiToken = async (
+    req: AuthRequest,
+    res: Response,
+    next: NextFunction
+): Promise<void> => {
     try {
         const { projectToken } = req.params;
 
         if (!projectToken) {
-            return res.status(401).json({
+            res.status(401).json({
                 success: false,
                 message: 'API token is required.'
             });
+            return;
         }
 
         const project = await Project.findOne({ apiToken: projectToken });
 
         if (!project) {
-            return res.status(401).json({
+            res.status(401).json({
                 success: false,
                 message: 'Invalid API token.'
             });
+            return;
         }
 
         req.project = project;
@@ -77,23 +98,29 @@ export const authenticateApiToken = async (req, res, next) => {
 };
 
 // Middleware to check if user owns the project
-export const authorizeProjectOwner = async (req, res, next) => {
+export const authorizeProjectOwner = async (
+    req: AuthRequest,
+    res: Response,
+    next: NextFunction
+): Promise<void> => {
     try {
         const projectId = req.params.id || req.params.projectId;
         const project = await Project.findById(projectId);
 
         if (!project) {
-            return res.status(404).json({
+            res.status(404).json({
                 success: false,
                 message: 'Project not found.'
             });
+            return;
         }
 
-        if (project.userId.toString() !== req.user._id.toString()) {
-            return res.status(403).json({
+        if (!req.user || project.userId.toString() !== req.user._id.toString()) {
+            res.status(403).json({
                 success: false,
                 message: 'Access denied. You do not own this project.'
             });
+            return;
         }
 
         req.project = project;
