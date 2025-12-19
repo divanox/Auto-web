@@ -1,6 +1,6 @@
 import express, { Router, Response } from 'express';
 import { nanoid } from 'nanoid';
-import { Project } from '../models/index.js';
+import { Project, Module, ProjectModule } from '../models/index.js';
 import { authenticateUser, authorizeProjectOwner, AuthRequest } from '../middleware/auth.js';
 
 const router: Router = express.Router();
@@ -152,6 +152,125 @@ router.post('/:id/regenerate-token', authorizeProjectOwner, async (req: AuthRequ
         res.status(500).json({
             success: false,
             message: 'Error regenerating API token.',
+            error: (error as Error).message
+        });
+    }
+});
+
+// @route   GET /api/projects/:id/modules
+// @desc    Get all enabled modules for a project
+// @access  Private (owner only)
+router.get('/:id/modules', authorizeProjectOwner, async (req: AuthRequest, res: Response): Promise<void> => {
+    try {
+        const projectModules = await ProjectModule.find({
+            projectId: req.params.id
+        }).populate('moduleId');
+
+        res.status(200).json({
+            success: true,
+            count: projectModules.length,
+            data: { modules: projectModules }
+        });
+    } catch (error) {
+        console.error('Get project modules error:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error fetching project modules.',
+            error: (error as Error).message
+        });
+    }
+});
+
+// @route   POST /api/projects/:id/modules
+// @desc    Enable a module for a project
+// @access  Private (owner only)
+router.post('/:id/modules', authorizeProjectOwner, async (req: AuthRequest, res: Response): Promise<void> => {
+    try {
+        const { moduleId, configuration } = req.body;
+
+        if (!moduleId) {
+            res.status(400).json({
+                success: false,
+                message: 'Module ID is required.'
+            });
+            return;
+        }
+
+        // Check if module exists
+        const module = await Module.findById(moduleId);
+        if (!module) {
+            res.status(404).json({
+                success: false,
+                message: 'Module not found.'
+            });
+            return;
+        }
+
+        // Check if module is already enabled
+        const existing = await ProjectModule.findOne({
+            projectId: req.params.id,
+            moduleId
+        });
+
+        if (existing) {
+            res.status(400).json({
+                success: false,
+                message: 'Module is already enabled for this project.'
+            });
+            return;
+        }
+
+        // Enable module
+        const projectModule = await ProjectModule.create({
+            projectId: req.params.id,
+            moduleId,
+            configuration: configuration || {}
+        });
+
+        await projectModule.populate('moduleId');
+
+        res.status(201).json({
+            success: true,
+            message: 'Module enabled successfully.',
+            data: { projectModule }
+        });
+    } catch (error) {
+        console.error('Enable module error:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error enabling module.',
+            error: (error as Error).message
+        });
+    }
+});
+
+// @route   DELETE /api/projects/:id/modules/:moduleId
+// @desc    Disable a module for a project
+// @access  Private (owner only)
+router.delete('/:id/modules/:moduleId', authorizeProjectOwner, async (req: AuthRequest, res: Response): Promise<void> => {
+    try {
+        const result = await ProjectModule.findOneAndDelete({
+            projectId: req.params.id,
+            moduleId: req.params.moduleId
+        });
+
+        if (!result) {
+            res.status(404).json({
+                success: false,
+                message: 'Module not found for this project.'
+            });
+            return;
+        }
+
+        res.status(200).json({
+            success: true,
+            message: 'Module disabled successfully.'
+        });
+    } catch (error) {
+        console.error('Disable module error:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error disabling module.',
             error: (error as Error).message
         });
     }

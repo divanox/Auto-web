@@ -9,6 +9,13 @@ import ProjectDetail from './pages/ProjectDetail';
 import ComponentLibrary from './pages/ComponentLibrary';
 import ComponentEditor from './pages/ComponentEditor';
 import SitePreview from './pages/SitePreview';
+import PagesManager from './pages/PagesManager';
+import AdminPanel from './pages/AdminPanel';
+import AdminDashboard from './pages/admin/AdminDashboard';
+import ProductManager from './pages/admin/ProductManager';
+import ServiceManager from './pages/admin/ServiceManager';
+import TeamManager from './pages/admin/TeamManager';
+import GalleryManager from './pages/admin/GalleryManager';
 import './index.css';
 
 function App() {
@@ -46,6 +53,22 @@ function App() {
                         }
                     />
                     <Route
+                        path="/projects/:id/pages"
+                        element={
+                            <ProtectedRoute>
+                                <PagesManager />
+                            </ProtectedRoute>
+                        }
+                    />
+                    <Route
+                        path="/projects/:id/pages/:pageId/components"
+                        element={
+                            <ProtectedRoute>
+                                <ComponentLibrary />
+                            </ProtectedRoute>
+                        }
+                    />
+                    <Route
                         path="/projects/:id/components"
                         element={
                             <ProtectedRoute>
@@ -62,6 +85,14 @@ function App() {
                         }
                     />
                     <Route
+                        path="/projects/:id/pages/:pageId/components/:componentId/edit"
+                        element={
+                            <ProtectedRoute>
+                                <ComponentEditor />
+                            </ProtectedRoute>
+                        }
+                    />
+                    <Route
                         path="/projects/:id/preview"
                         element={
                             <ProtectedRoute>
@@ -69,6 +100,22 @@ function App() {
                             </ProtectedRoute>
                         }
                     />
+
+                    {/* Admin Panel routes */}
+                    <Route
+                        path="/projects/:id/admin"
+                        element={
+                            <ProtectedRoute>
+                                <AdminPanel />
+                            </ProtectedRoute>
+                        }
+                    >
+                        <Route index element={<AdminDashboard />} />
+                        <Route path="products" element={<ProductManager />} />
+                        <Route path="services" element={<ServiceManager />} />
+                        <Route path="team" element={<TeamManager />} />
+                        <Route path="gallery" element={<GalleryManager />} />
+                    </Route>
 
                     {/* Default redirect */}
                     <Route path="/" element={<Navigate to="/dashboard" replace />} />

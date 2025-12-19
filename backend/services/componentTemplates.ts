@@ -350,5 +350,497 @@ export const componentTemplates: Partial<IComponentTemplate>[] = [
                 text: '#ffffff'
             }
         }
+    },
+
+    // 8. Product Grid
+    {
+        name: 'Product Grid',
+        slug: 'product-grid',
+        category: 'content',
+        description: 'Display products in a responsive grid layout with images, prices, and details',
+        icon: 'Grid3x3',
+        fieldSchema: {
+            fields: [
+                {
+                    name: 'sectionTitle',
+                    type: 'text',
+                    label: 'Section Title',
+                    required: false,
+                    default: 'Our Products'
+                },
+                {
+                    name: 'sectionSubtitle',
+                    type: 'textarea',
+                    label: 'Section Subtitle',
+                    required: false,
+                    default: 'Discover our amazing collection'
+                },
+                {
+                    name: 'dataSource',
+                    type: 'select',
+                    label: 'Data Source',
+                    required: true,
+                    options: ['admin-panel', 'manual'],
+                    default: 'admin-panel'
+                },
+                {
+                    name: 'columns',
+                    type: 'select',
+                    label: 'Columns',
+                    required: false,
+                    options: ['2', '3', '4'],
+                    default: '3'
+                },
+                {
+                    name: 'showPrice',
+                    type: 'boolean',
+                    label: 'Show Price',
+                    required: false,
+                    default: true
+                },
+                {
+                    name: 'showButton',
+                    type: 'boolean',
+                    label: 'Show Action Button',
+                    required: false,
+                    default: true
+                }
+            ]
+        },
+        defaultConfig: {
+            layout: 'grid-3',
+            colors: {
+                primary: '#0ea5e9',
+                background: '#ffffff',
+                text: '#1e293b'
+            }
+        }
+    },
+
+    // 9. Product List
+    {
+        name: 'Product List',
+        slug: 'product-list',
+        category: 'content',
+        description: 'Display products in a list/card format with detailed information',
+        icon: 'Grid3x3',
+        fieldSchema: {
+            fields: [
+                {
+                    name: 'sectionTitle',
+                    type: 'text',
+                    label: 'Section Title',
+                    required: false,
+                    default: 'Featured Products'
+                },
+                {
+                    name: 'dataSource',
+                    type: 'select',
+                    label: 'Data Source',
+                    required: true,
+                    options: ['admin-panel', 'manual'],
+                    default: 'admin-panel'
+                },
+                {
+                    name: 'layout',
+                    type: 'select',
+                    label: 'Layout Style',
+                    required: false,
+                    options: ['list', 'cards'],
+                    default: 'cards'
+                }
+            ]
+        },
+        defaultConfig: {
+            layout: 'list',
+            colors: {
+                primary: '#0ea5e9',
+                background: '#f8fafc',
+                text: '#1e293b'
+            }
+        }
+    },
+
+    // 10. Services Grid
+    {
+        name: 'Services Grid',
+        slug: 'services-grid',
+        category: 'content',
+        description: 'Showcase your services with icons, titles, and descriptions',
+        icon: 'Grid3x3',
+        fieldSchema: {
+            fields: [
+                {
+                    name: 'sectionTitle',
+                    type: 'text',
+                    label: 'Section Title',
+                    required: true,
+                    default: 'Our Services'
+                },
+                {
+                    name: 'sectionSubtitle',
+                    type: 'textarea',
+                    label: 'Section Subtitle',
+                    required: false,
+                    default: 'What we offer'
+                },
+                {
+                    name: 'dataSource',
+                    type: 'select',
+                    label: 'Data Source',
+                    required: true,
+                    options: ['admin-panel', 'manual'],
+                    default: 'admin-panel'
+                },
+                {
+                    name: 'columns',
+                    type: 'select',
+                    label: 'Columns',
+                    required: false,
+                    options: ['2', '3', '4'],
+                    default: '3'
+                }
+            ]
+        },
+        defaultConfig: {
+            layout: 'grid-3',
+            colors: {
+                primary: '#0ea5e9',
+                background: '#ffffff',
+                text: '#1e293b'
+            }
+        }
+    },
+
+    // 11. Team Section
+    {
+        name: 'Team Section',
+        slug: 'team-section',
+        category: 'content',
+        description: 'Display team members with photos, names, roles, and bios',
+        icon: 'Users',
+        fieldSchema: {
+            fields: [
+                {
+                    name: 'sectionTitle',
+                    type: 'text',
+                    label: 'Section Title',
+                    required: true,
+                    default: 'Meet Our Team'
+                },
+                {
+                    name: 'sectionSubtitle',
+                    type: 'textarea',
+                    label: 'Section Subtitle',
+                    required: false,
+                    default: 'The people behind our success'
+                },
+                {
+                    name: 'dataSource',
+                    type: 'select',
+                    label: 'Data Source',
+                    required: true,
+                    options: ['admin-panel', 'manual'],
+                    default: 'admin-panel'
+                },
+                {
+                    name: 'columns',
+                    type: 'select',
+                    label: 'Columns',
+                    required: false,
+                    options: ['2', '3', '4'],
+                    default: '3'
+                },
+                {
+                    name: 'showSocial',
+                    type: 'boolean',
+                    label: 'Show Social Links',
+                    required: false,
+                    default: true
+                }
+            ]
+        },
+        defaultConfig: {
+            layout: 'grid-3',
+            colors: {
+                primary: '#0ea5e9',
+                background: '#f8fafc',
+                text: '#1e293b'
+            }
+        }
+    },
+
+    // 12. Gallery
+    {
+        name: 'Gallery',
+        slug: 'gallery',
+        category: 'media',
+        description: 'Image gallery with lightbox functionality',
+        icon: 'Image',
+        fieldSchema: {
+            fields: [
+                {
+                    name: 'sectionTitle',
+                    type: 'text',
+                    label: 'Section Title',
+                    required: false,
+                    default: 'Gallery'
+                },
+                {
+                    name: 'dataSource',
+                    type: 'select',
+                    label: 'Data Source',
+                    required: true,
+                    options: ['admin-panel', 'manual'],
+                    default: 'admin-panel'
+                },
+                {
+                    name: 'columns',
+                    type: 'select',
+                    label: 'Columns',
+                    required: false,
+                    options: ['2', '3', '4', '5'],
+                    default: '4'
+                },
+                {
+                    name: 'enableLightbox',
+                    type: 'boolean',
+                    label: 'Enable Lightbox',
+                    required: false,
+                    default: true
+                }
+            ]
+        },
+        defaultConfig: {
+            layout: 'grid-4',
+            colors: {
+                background: '#ffffff'
+            }
+        }
+    },
+
+    // 13. FAQ Accordion
+    {
+        name: 'FAQ Accordion',
+        slug: 'faq-accordion',
+        category: 'content',
+        description: 'Expandable FAQ section with questions and answers',
+        icon: 'HelpCircle',
+        fieldSchema: {
+            fields: [
+                {
+                    name: 'sectionTitle',
+                    type: 'text',
+                    label: 'Section Title',
+                    required: true,
+                    default: 'Frequently Asked Questions'
+                },
+                {
+                    name: 'sectionSubtitle',
+                    type: 'textarea',
+                    label: 'Section Subtitle',
+                    required: false,
+                    default: 'Find answers to common questions'
+                },
+                {
+                    name: 'dataSource',
+                    type: 'select',
+                    label: 'Data Source',
+                    required: true,
+                    options: ['admin-panel', 'manual'],
+                    default: 'admin-panel'
+                },
+                {
+                    name: 'defaultOpen',
+                    type: 'boolean',
+                    label: 'First Item Open by Default',
+                    required: false,
+                    default: true
+                }
+            ]
+        },
+        defaultConfig: {
+            layout: 'accordion',
+            colors: {
+                primary: '#0ea5e9',
+                background: '#f8fafc',
+                text: '#1e293b'
+            }
+        }
+    },
+
+    // 14. Stats/Metrics
+    {
+        name: 'Stats Section',
+        slug: 'stats-section',
+        category: 'content',
+        description: 'Display key numbers and achievements',
+        icon: 'TrendingUp',
+        fieldSchema: {
+            fields: [
+                {
+                    name: 'sectionTitle',
+                    type: 'text',
+                    label: 'Section Title',
+                    required: false,
+                    default: 'Our Impact'
+                },
+                {
+                    name: 'stats',
+                    type: 'text',
+                    label: 'Stats (JSON Array)',
+                    required: true,
+                    placeholder: '[{"value":"1000+","label":"Customers"}]',
+                    default: JSON.stringify([
+                        { value: '10K+', label: 'Happy Customers', icon: 'Users' },
+                        { value: '99%', label: 'Satisfaction Rate', icon: 'Star' },
+                        { value: '24/7', label: 'Support', icon: 'Clock' },
+                        { value: '50+', label: 'Countries', icon: 'Globe' }
+                    ])
+                },
+                {
+                    name: 'layout',
+                    type: 'select',
+                    label: 'Layout',
+                    required: false,
+                    options: ['horizontal', 'grid'],
+                    default: 'horizontal'
+                }
+            ]
+        },
+        defaultConfig: {
+            layout: 'horizontal',
+            colors: {
+                primary: '#0ea5e9',
+                background: '#1e293b',
+                text: '#ffffff'
+            }
+        }
+    },
+
+    // 15. CTA Banner
+    {
+        name: 'CTA Banner',
+        slug: 'cta-banner',
+        category: 'content',
+        description: 'Call-to-action banner with title, description, and button',
+        icon: 'Megaphone',
+        fieldSchema: {
+            fields: [
+                {
+                    name: 'title',
+                    type: 'text',
+                    label: 'Title',
+                    required: true,
+                    default: 'Ready to Get Started?'
+                },
+                {
+                    name: 'description',
+                    type: 'textarea',
+                    label: 'Description',
+                    required: false,
+                    default: 'Join thousands of satisfied customers today'
+                },
+                {
+                    name: 'primaryButtonText',
+                    type: 'text',
+                    label: 'Primary Button Text',
+                    required: true,
+                    default: 'Get Started'
+                },
+                {
+                    name: 'primaryButtonLink',
+                    type: 'url',
+                    label: 'Primary Button Link',
+                    required: true,
+                    default: '#'
+                },
+                {
+                    name: 'secondaryButtonText',
+                    type: 'text',
+                    label: 'Secondary Button Text',
+                    required: false,
+                    default: 'Learn More'
+                },
+                {
+                    name: 'secondaryButtonLink',
+                    type: 'url',
+                    label: 'Secondary Button Link',
+                    required: false,
+                    default: '#'
+                },
+                {
+                    name: 'backgroundImage',
+                    type: 'image',
+                    label: 'Background Image',
+                    required: false
+                }
+            ]
+        },
+        defaultConfig: {
+            layout: 'centered',
+            colors: {
+                primary: '#0ea5e9',
+                secondary: '#d946ef',
+                background: '#1e293b',
+                text: '#ffffff'
+            }
+        }
+    },
+
+    // 16. Newsletter
+    {
+        name: 'Newsletter Signup',
+        slug: 'newsletter-signup',
+        category: 'form',
+        description: 'Email newsletter subscription form',
+        icon: 'Mail',
+        fieldSchema: {
+            fields: [
+                {
+                    name: 'title',
+                    type: 'text',
+                    label: 'Title',
+                    required: true,
+                    default: 'Subscribe to Our Newsletter'
+                },
+                {
+                    name: 'description',
+                    type: 'textarea',
+                    label: 'Description',
+                    required: false,
+                    default: 'Get the latest updates and news delivered to your inbox'
+                },
+                {
+                    name: 'buttonText',
+                    type: 'text',
+                    label: 'Button Text',
+                    required: true,
+                    default: 'Subscribe'
+                },
+                {
+                    name: 'placeholder',
+                    type: 'text',
+                    label: 'Input Placeholder',
+                    required: false,
+                    default: 'Enter your email'
+                },
+                {
+                    name: 'showPrivacyNote',
+                    type: 'boolean',
+                    label: 'Show Privacy Note',
+                    required: false,
+                    default: true
+                }
+            ]
+        },
+        defaultConfig: {
+            layout: 'inline',
+            colors: {
+                primary: '#0ea5e9',
+                background: '#f8fafc',
+                text: '#1e293b'
+            }
+        }
     }
 ];

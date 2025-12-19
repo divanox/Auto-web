@@ -14,6 +14,7 @@ import componentTemplateRoutes from './routes/componentTemplates.js';
 import projectComponentRoutes from './routes/projectComponents.js';
 import siteComponentRoutes from './routes/siteComponents.js';
 import pagesRoutes from './routes/pages.js';
+import adminDataRoutes from './routes/adminData.js';
 
 // Load environment variables
 dotenv.config();
@@ -64,8 +65,12 @@ app.use('/api/modules', moduleRoutes);
 app.use('/api/component-templates', componentTemplateRoutes);
 app.use('/api', pagesRoutes);
 app.use('/api', projectComponentRoutes);
+app.use('/api', adminDataRoutes);
 app.use('/api/v1', siteComponentRoutes);
 app.use('/api/v1', dynamicApiRoutes);
+
+// Serve uploaded files
+app.use('/uploads', express.static('uploads'));
 
 // 404 handler
 app.use((req: Request, res: Response) => {

@@ -59,6 +59,21 @@ export interface Project {
     updatedAt: string;
 }
 
+export interface Page {
+    _id: string;
+    projectId: string;
+    name: string;
+    slug: string;
+    isHomePage: boolean;
+    order: number;
+    isPublished: boolean;
+    seoTitle: string;
+    seoDescription: string;
+    seoKeywords: string;
+    createdAt: string;
+    updatedAt: string;
+}
+
 export interface Module {
     _id: string;
     name: string;
@@ -144,6 +159,19 @@ export const projectsAPI = {
         api.put(`/api/projects/${id}`, data),
     delete: (id: string) => api.delete(`/api/projects/${id}`),
     regenerateToken: (id: string) => api.post(`/api/projects/${id}/regenerate-token`),
+};
+
+// Pages API
+export const pagesAPI = {
+    getAll: (projectId: string) => api.get(`/api/projects/${projectId}/pages`),
+    create: (projectId: string, data: { name: string; slug: string; isHomePage?: boolean; seoTitle?: string; seoDescription?: string; seoKeywords?: string }) =>
+        api.post(`/api/projects/${projectId}/pages`, data),
+    getOne: (projectId: string, pageId: string) => api.get(`/api/projects/${projectId}/pages/${pageId}`),
+    update: (projectId: string, pageId: string, data: { name?: string; slug?: string; isHomePage?: boolean; isPublished?: boolean; seoTitle?: string; seoDescription?: string; seoKeywords?: string }) =>
+        api.put(`/api/projects/${projectId}/pages/${pageId}`, data),
+    delete: (projectId: string, pageId: string) => api.delete(`/api/projects/${projectId}/pages/${pageId}`),
+    reorder: (projectId: string, pageIds: string[]) =>
+        api.put(`/api/projects/${projectId}/pages/reorder`, { pageIds }),
 };
 
 // Modules API
