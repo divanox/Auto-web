@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { projectComponentsAPI, ProjectComponent } from '../services/api';
 import Layout from '../components/Layout';
+import ComponentRenderer from '../components/ComponentRenderer';
 import { ArrowLeft, Eye, Monitor, Tablet, Smartphone, ExternalLink } from 'lucide-react';
 
 // Component Renderers
@@ -228,12 +229,13 @@ const FooterRenderer = ({ content, config }: any) => {
     );
 };
 
-const componentRenderers: Record<string, any> = {
+// Static component renderers (for components without dynamic data)
+const staticRenderers: Record<string, any> = {
     'hero-section': HeroRenderer,
     'features-grid': FeaturesRenderer,
     'contact-form': ContactRenderer,
     'about-section': AboutRenderer,
-    footer: FooterRenderer,
+    'footer': FooterRenderer,
 };
 
 const SitePreview = () => {
@@ -343,15 +345,27 @@ const SitePreview = () => {
                             </div>
                         ) : (
                             components.map((component) => {
-                                const Renderer = componentRenderers[component.templateId.slug];
-                                if (!Renderer) return null;
+                                // Check if it's a static component with a dedicated renderer
+                                const StaticRenderer = staticRenderers[component.templateId.slug];
 
                                 return (
                                     <div key={component._id} className="relative group">
-                                        <Renderer
-                                            content={component.content}
-                                            config={component.configuration}
-                                        />
+                                        {StaticRenderer ? (
+                                            <StaticRenderer
+                                                content={component.content}
+                                                config={component.configuration}
+                                            />
+                                        ) : (
+                                            <div className="py-12 px-8">
+                                                <div className="max-w-6xl mx-auto">
+                                                    <ComponentRenderer
+                                                        templateSlug={component.templateId.slug}
+                                                        configuration={component.configuration}
+                                                        content={component.content}
+                                                    />
+                                                </div>
+                                            </div>
+                                        )}
                                         <Link
                                             to={`/projects/${id}/components/${component._id}/edit`}
                                             className="absolute top-4 right-4 bg-black/70 text-white px-3 py-2 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity text-sm"
