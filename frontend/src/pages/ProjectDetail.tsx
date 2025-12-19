@@ -180,22 +180,58 @@ const ProjectDetail = () => {
                     </div>
                 </div>
 
-                {/* Website Components */}
-                <div className="glass rounded-2xl p-6 mb-8">
-                    <div className="flex items-center justify-between mb-4">
-                        <h2 className="text-xl font-bold text-gray-800">Website Components</h2>
-                        <Link
-                            to={`/projects/${id}/components`}
-                            className="flex items-center gap-2 bg-gradient-to-r from-primary-500 to-secondary-500 text-white px-4 py-2 rounded-lg hover:shadow-lg transition-all"
-                        >
-                            <Package className="w-4 h-4" />
-                            Manage Components
-                        </Link>
+                {/* Website Components or Pages */}
+                {project.projectType === 'website' ? (
+                    <>
+                        <div className="glass rounded-2xl p-6 mb-8">
+                            <div className="flex items-center justify-between mb-4">
+                                <h2 className="text-xl font-bold text-gray-800">Website Pages</h2>
+                                <Link
+                                    to={`/projects/${id}/pages`}
+                                    className="flex items-center gap-2 bg-gradient-to-r from-primary-500 to-secondary-500 text-white px-4 py-2 rounded-lg hover:shadow-lg transition-all"
+                                >
+                                    <Package className="w-4 h-4" />
+                                    Manage Pages
+                                </Link>
+                            </div>
+                            <p className="text-gray-600">
+                                Create and manage pages for your website. Add components to each page to build your site.
+                            </p>
+                        </div>
+
+                        <div className="glass rounded-2xl p-6 mb-8">
+                            <div className="flex items-center justify-between mb-4">
+                                <h2 className="text-xl font-bold text-gray-800">Content Management</h2>
+                                <Link
+                                    to={`/projects/${id}/admin`}
+                                    className="flex items-center gap-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white px-4 py-2 rounded-lg hover:shadow-lg transition-all"
+                                >
+                                    <Users className="w-4 h-4" />
+                                    Admin Panel
+                                </Link>
+                            </div>
+                            <p className="text-gray-600">
+                                Manage your website content including products, services, team members, and gallery images.
+                            </p>
+                        </div>
+                    </>
+                ) : (
+                    <div className="glass rounded-2xl p-6 mb-8">
+                        <div className="flex items-center justify-between mb-4">
+                            <h2 className="text-xl font-bold text-gray-800">API Components</h2>
+                            <Link
+                                to={`/projects/${id}/components`}
+                                className="flex items-center gap-2 bg-gradient-to-r from-primary-500 to-secondary-500 text-white px-4 py-2 rounded-lg hover:shadow-lg transition-all"
+                            >
+                                <Package className="w-4 h-4" />
+                                Manage Components
+                            </Link>
+                        </div>
+                        <p className="text-gray-600">
+                            Build your API using prebuilt components.
+                        </p>
                     </div>
-                    <p className="text-gray-600">
-                        Build your website using prebuilt components like Hero sections, Features, Contact forms, and more.
-                    </p>
-                </div>
+                )}
 
                 {/* Enabled Modules */}
                 {enabledModules.length > 0 && (
