@@ -199,20 +199,28 @@ const ProjectDetail = () => {
                             </p>
                         </div>
 
+
                         <div className="glass rounded-2xl p-6 mb-8">
-                            <div className="flex items-center justify-between mb-4">
-                                <h2 className="text-xl font-bold text-gray-800">Content Management</h2>
-                                <Link
-                                    to={`/projects/${id}/admin`}
-                                    className="flex items-center gap-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white px-4 py-2 rounded-lg hover:shadow-lg transition-all"
-                                >
-                                    <Users className="w-4 h-4" />
-                                    Admin Panel
-                                </Link>
-                            </div>
-                            <p className="text-gray-600">
+                            <h2 className="text-xl font-bold text-gray-800 mb-4">Content Management</h2>
+                            <p className="text-gray-600 mb-4">
                                 Manage your website content including products, services, team members, and gallery images.
                             </p>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <Link
+                                    to={`/projects/${id}/admin`}
+                                    className="flex items-center justify-center gap-2 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-medium py-3 px-4 rounded-lg transition-all hover:shadow-lg"
+                                >
+                                    <Users className="w-5 h-5" />
+                                    Admin Panel
+                                </Link>
+                                <Link
+                                    to={`/projects/${id}/preview`}
+                                    className="flex items-center justify-center gap-2 bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white font-medium py-3 px-4 rounded-lg transition-all hover:shadow-lg"
+                                >
+                                    <Eye className="w-5 h-5" />
+                                    Preview Website
+                                </Link>
+                            </div>
                         </div>
                     </>
                 ) : (
