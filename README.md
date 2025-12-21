@@ -1,5 +1,9 @@
 # API Builder
 
+[![CI](https://github.com/YOUR_USERNAME/YOUR_REPO/workflows/CI/badge.svg)](https://github.com/YOUR_USERNAME/YOUR_REPO/actions/workflows/ci.yml)
+[![Deploy](https://github.com/YOUR_USERNAME/YOUR_REPO/workflows/Deploy/badge.svg)](https://github.com/YOUR_USERNAME/YOUR_REPO/actions/workflows/deploy.yml)
+[![CodeQL](https://github.com/YOUR_USERNAME/YOUR_REPO/workflows/CodeQL%20Security%20Scan/badge.svg)](https://github.com/YOUR_USERNAME/YOUR_REPO/actions/workflows/codeql.yml)
+
 A modern no-code backend generator that allows businesses and creators to instantly create RESTful APIs by selecting from predefined modules.
 
 ## 🚀 Features
@@ -127,6 +131,37 @@ vercel --prod
 
 2. Set environment variable in Vercel dashboard:
    - `VITE_API_URL` (your backend URL)
+
+## 🔄 CI/CD
+
+This project uses GitHub Actions for continuous integration and deployment:
+
+- **Automated Builds**: Every push and PR triggers builds for both backend and frontend
+- **Type Checking**: TypeScript validation on all code
+- **Linting**: ESLint checks for code quality
+- **Security Scanning**: CodeQL scans for vulnerabilities
+- **Dependency Review**: Automatic checks for vulnerable dependencies
+- **Auto-Deployment**: Pushes to `main` automatically deploy to Vercel
+
+### Setup CI/CD
+
+1. **Configure GitHub Secrets** (required for deployment):
+   - `VERCEL_TOKEN` - Get from [Vercel account tokens](https://vercel.com/account/tokens)
+   - `VERCEL_ORG_ID` - From `.vercel/project.json` after running `vercel link`
+   - `VERCEL_PROJECT_ID_BACKEND` - Backend project ID
+   - `VERCEL_PROJECT_ID_FRONTEND` - Frontend project ID
+   - `VITE_API_URL` - Your production backend URL
+
+2. **Enable GitHub Actions**:
+   - Go to Settings → Actions → General
+   - Allow all actions and reusable workflows
+   - Enable read and write permissions
+
+3. **View detailed setup instructions**: See [`.github/README.md`](.github/README.md)
+
+### Workflow Status
+
+Check the [Actions tab](../../actions) to view workflow runs and deployment status.
 
 ## 📖 Usage
 
