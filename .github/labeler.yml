@@ -1,0 +1,38 @@
+# Auto-labeler configuration
+# Labels PRs based on which files are changed
+
+backend:
+  - backend/**/*
+
+frontend:
+  - frontend/**/*
+
+documentation:
+  - '**/*.md'
+  - docs/**/*
+
+dependencies:
+  - '**/package.json'
+  - '**/package-lock.json'
+
+configuration:
+  - '**/*.config.js'
+  - '**/*.config.ts'
+  - '**/tsconfig.json'
+  - '**/.eslintrc*'
+  - '**/.prettierrc*'
+
+ci-cd:
+  - '.github/**/*'
+
+database:
+  - backend/models/**/*
+  - backend/scripts/**/*
+
+api:
+  - backend/routes/**/*
+  - backend/services/**/*
+
+ui:
+  - frontend/src/components/**/*
+  - frontend/src/pages/**/*
