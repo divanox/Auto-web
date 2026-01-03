@@ -17,7 +17,7 @@ export interface ModuleDefinition {
     slug: string;
     description: string;
     icon: string;
-    schema: ModuleSchema;
+    schemaData: ModuleSchema;
 }
 
 export const moduleDefinitions: ModuleDefinition[] = [
@@ -26,7 +26,7 @@ export const moduleDefinitions: ModuleDefinition[] = [
         slug: 'products',
         description: 'Manage your product inventory with pricing, SKUs, and stock levels',
         icon: 'Package',
-        schema: {
+        schemaData: {
             name: { type: 'string', required: true, label: 'Product Name' },
             description: { type: 'text', required: false, label: 'Description' },
             price: { type: 'number', required: true, label: 'Price' },
@@ -41,7 +41,7 @@ export const moduleDefinitions: ModuleDefinition[] = [
         slug: 'blog',
         description: 'Create and manage blog posts and news articles',
         icon: 'FileText',
-        schema: {
+        schemaData: {
             title: { type: 'string', required: true, label: 'Title' },
             content: { type: 'text', required: true, label: 'Content' },
             author: { type: 'string', required: true, label: 'Author' },
@@ -56,7 +56,7 @@ export const moduleDefinitions: ModuleDefinition[] = [
         slug: 'customers',
         description: 'Store and manage customer information and contacts',
         icon: 'Users',
-        schema: {
+        schemaData: {
             firstName: { type: 'string', required: true, label: 'First Name' },
             lastName: { type: 'string', required: true, label: 'Last Name' },
             email: { type: 'email', required: true, label: 'Email' },
@@ -71,7 +71,7 @@ export const moduleDefinitions: ModuleDefinition[] = [
         slug: 'orders',
         description: 'Track orders, services, and transactions',
         icon: 'ShoppingCart',
-        schema: {
+        schemaData: {
             orderNumber: { type: 'string', required: true, label: 'Order Number' },
             customerName: { type: 'string', required: true, label: 'Customer Name' },
             items: { type: 'array', required: true, label: 'Items' },

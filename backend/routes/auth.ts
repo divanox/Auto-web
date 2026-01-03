@@ -5,6 +5,22 @@ import { authenticateUser, AuthRequest } from '../middleware/auth.js';
 
 const router: Router = express.Router();
 
+// Helper function to generate JWT token
+const generateToken = (userId: string): string => {
+    const jwtSecret = process.env.JWT_SECRET;
+    if (!jwtSecret) {
+        throw new Error('JWT_SECRET is not defined in environment variables');
+    }
+
+    const expiresIn = process.env.JWT_EXPIRE || '7d';
+
+    return jwt.sign(
+        { userId },
+        jwtSecret,
+        { expiresIn } as jwt.SignOptions
+    );
+};
+
 // @route   POST /api/auth/register
 // @desc    Register a new user
 // @access  Public
@@ -35,11 +51,7 @@ router.post('/register', async (req: AuthRequest, res: Response): Promise<void> 
         const user = await User.create({ email, password, name });
 
         // Generate JWT token
-        const token = jwt.sign(
-            { userId: user._id },
-            process.env.JWT_SECRET as string,
-            { expiresIn: process.env.JWT_EXPIRE || '7d' }
-        );
+        const token = generateToken(user._id.toString());
 
         res.status(201).json({
             success: true,
@@ -96,11 +108,7 @@ router.post('/login', async (req: AuthRequest, res: Response): Promise<void> => 
         }
 
         // Generate JWT token
-        const token = jwt.sign(
-            { userId: user._id },
-            process.env.JWT_SECRET as string,
-            { expiresIn: process.env.JWT_EXPIRE || '7d' }
-        );
+        const token = generateToken(user._id.toString());
 
         // Remove password from response
         user.password = undefined as any;

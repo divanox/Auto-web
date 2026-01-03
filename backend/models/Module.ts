@@ -5,7 +5,7 @@ export interface IModule extends Document {
     slug: string;
     description: string;
     icon: string;
-    schema: Record<string, any>;
+    schemaData: Record<string, any>;
     createdAt: Date;
     updatedAt: Date;
 }
@@ -30,7 +30,7 @@ const moduleSchema = new Schema<IModule>({
         type: String,
         default: 'Box'
     },
-    schema: {
+    schemaData: {
         type: Schema.Types.Mixed,
         required: true
     }

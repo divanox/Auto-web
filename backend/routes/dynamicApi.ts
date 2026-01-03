@@ -92,7 +92,7 @@ router.post('/:projectToken/:moduleName', async (req: AuthRequest, res: Response
         }
 
         // Validate data against schema
-        const validation = validateDataAgainstSchema(req.body, module.schema);
+        const validation = validateDataAgainstSchema(req.body, module.schemaData);
         if (!validation.isValid) {
             res.status(400).json({
                 success: false,
@@ -188,7 +188,7 @@ router.put('/:projectToken/:moduleName/:id', async (req: AuthRequest, res: Respo
         }
 
         // Validate data against schema
-        const validation = validateDataAgainstSchema(req.body, module.schema);
+        const validation = validateDataAgainstSchema(req.body, module.schemaData);
         if (!validation.isValid) {
             res.status(400).json({
                 success: false,
