@@ -108,7 +108,6 @@ npm i -g vercel
 2. Deploy:
 ```bash
 cd backend
-vercel --prod
 ```
 
 3. Set environment variables in Vercel dashboard:
